@@ -18,12 +18,28 @@ $ws = new WebSocketMiddleware(['/ws'], function (WebSocketConnection $conn) {
     });
 });
 
-$app = new FrameworkX\App($ws);
+$container = new FrameworkX\Container([]);
+$app = new FrameworkX\App($container, $ws);
 
-$app->get('/', function () use ($store) {
+$hostport = $container->getEnv('X_LISTEN') ?? '127.0.0.1:8080';
+dbg("running on $hostport");
+
+$app->get('/', function () use ($store, $hostport) {
     $posts = $store->select('SELECT * from posts');
     ob_start();
     include(__DIR__ . '/../resources/posts.html');
+    $html = ob_get_clean();
+    return React\Http\Message\Response::html(
+        $html
+    );
+});
+
+$app->get('/posts/{id}', function (Psr\Http\Message\ServerRequestInterface $request) use ($store, $hostport) {
+    $id = $request->getAttribute('id');
+    $post = $store->select_first_row('SELECT * from posts WHERE id=:id', ['id' => $id]);
+    $replies = $store->select('SELECT * from replies WHERE post_id=:id', ['id' => $id]);
+    ob_start();
+    include(__DIR__ . '/../resources/post.html');
     $html = ob_get_clean();
     return React\Http\Message\Response::html(
         $html

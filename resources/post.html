@@ -5,23 +5,27 @@
     <title>xchan</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script src="https://unpkg.com/petite-vue" defer init></script>
+    <style>
+        aside{
+            margin-top: 2em;
+        }
+    </style>
 </head>
 <body>
-    <header>xchan
+    <header>xchan <nav><a href="/">← posts</a></nav>
 
-        <nav>&nbsp;</nav>
+        
     </header>
-    <main>
-        <h1>posts</h1>
-    <?php foreach($posts as $post){?>
-        <a href="/posts/<?=$post['id']?>">
-        <article>
-            <h2><?=$post['title']?></h2>
-            <p>...read</p>
-        </article>
-        </a>
-    <?}?>
 
+    <main>
+        <h1><?=$post['title']?></h1>
+        
+        <div class="post--body"><?=$post['body']?></div>
+<div class="replies">
+    <?php foreach($replies as $reply){?>
+        <div class="reply"><?=$reply['body']?></div>
+    <?}?>
+</div>
 </main>
 <aside>
 <input id="input">

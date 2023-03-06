@@ -12,8 +12,13 @@ class sqlite {
 
     // public PDO $db;
     // public string $name;
+    public DatabaseInterface $db;
+    public array $opts;
 
-    public function __construct(public DatabaseInterface $db, public array $opts = []) {
+    public function __construct(DatabaseInterface $db, array $opts = []) {
+        $this->db = $db;
+        $this->opts = $opts;
+
         # $file = $dir . $name . '.db';
         # $dsn = 'sqlite:' . $file;
         # $exists = \file_exists($file);
@@ -69,6 +74,11 @@ class sqlite {
 
     public function select_first_row($q, $vars = []) {
         $res = $this->query($q, $vars);
+        if ($res->rows) {
+            return $res->rows[0];
+        }
+        return [];
+
         while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             return $row;
         }
