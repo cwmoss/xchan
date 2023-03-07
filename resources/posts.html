@@ -5,19 +5,42 @@
     <title>xchan</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script src="https://unpkg.com/petite-vue" defer init></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        [v-cloak] {
+  display: none;
+}
+    </style>
 </head>
 <body>
     <header>xchan
 
-        <nav>&nbsp;</nav>
+        <nav>hello <?=$user?></nav>
     </header>
     <main>
+        <div v-scope="Panel()">
+            <button @click="click">New Post</button>
+            <div v-if="visible">
+                <form v-cloak v-scope="NewPost()" @submit.prevent="submitForm">
+                <div>
+                <label>Title</label>
+                <input type="text" name="title" required v-model="formData.title"/>
+                </div>
+                <div>
+                <label>Message</label>
+                <textarea name="body" required v-model="formData.body"></textarea>
+                </div>
+                <div>{{ formMessage }}</div>
+                <button :disabled="formLoading">{{buttonText}}</button>
+            </form>
+            </div>
+        </div>  
         <h1>posts</h1>
     <?php foreach($posts as $post){?>
         <a href="/posts/<?=$post['id']?>">
         <article>
-            <h2><?=$post['title']?></h2>
-            <p>...read</p>
+            <h4><?=$post['title']?></h4>
+            <p><?=$post['created_at']?> ...read</p>
         </article>
         </a>
     <?}?>
@@ -30,12 +53,32 @@
 </div>
 </aside>
 <script>
+    function message(txt){
+        Toastify({
+            text: txt,
+            duration: 3000,
+           // destination: "https://github.com/apvarun/toastify-js",
+           // newWindow: true,
+            close: false,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            },
+            onClick: function(){} // Callback after click
+            }).showToast();
+    }
+</script>
+<script>
     var ws = new WebSocket('ws://<?=$hostport?>/ws');
 
     ws.onopen = x => console.log('opened', x);
 
     var messages = document.getElementById('messages');
     ws.onmessage = m => {
+        message(m.data)
+        return
         var newMsg = document.createElement('div');
         newMsg.innerHTML = m.data;
         messages.appendChild(newMsg);
@@ -49,7 +92,63 @@
             input.value = '';
         }
     };
-</script>
 
+    
+</script>
+<script>
+    function Panel(){
+        return {
+            visible: false,
+            click(){
+                this.visible = !this.visible
+            }
+        }
+    }
+    function NewPost() {
+      return {
+        formData: {
+          title: "",
+          body: "",
+          
+        },
+        
+        formLoading: false,
+        buttonText: "Submit",
+        formMessage: "",
+
+        submitForm() {
+            this.formLoading = true;
+            this.buttonText = "Submitting...";
+          console.log(JSON.stringify(this.formData));
+          this.formMessage = "";
+          fetch('/posts', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(this.formData),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                // make the promise be rejected if we didn't get a 2xx response
+                throw new Error("Not 2xx response", {cause: response});
+              }
+              this.formData.title = "";
+              this.formData.body = "";
+              this.formMessage = "Form successfully submitted.";
+            })
+            .catch(() => {
+              this.formMessage = "Something went wrong.";
+            })
+            .finally(()=>{
+                this.formLoading = false
+                this.buttonText = "Submit";
+            });
+        },
+      };
+    }
+  </script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 </html>

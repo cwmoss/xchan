@@ -1,0 +1,11 @@
+###
+
+GET http://localhost:8081
+
+###
+POST http://randomguy:xxx@localhost:8081/posts
+
+{
+    "title": "via rest client2",
+    "body": "testmessage"
+}
