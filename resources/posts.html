@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>xchan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    
     <script src="https://unpkg.com/petite-vue" defer init></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
+        :root {
+            --button-base:#fddd34;
+            --selection:#fddd34;
+        }
         [v-cloak] {
   display: none;
 }
     </style>
+    
 </head>
 <body>
     <header>xchan
@@ -40,7 +46,7 @@
         <a href="/posts/<?=$post['id']?>">
         <article>
             <h4><?=$post['title']?></h4>
-            <p><?=$post['created_at']?> ...read</p>
+            <p><?=$post['created_at']?> by <?=$post['created_by']?> ...read</p>
         </article>
         </a>
     <?}?>
