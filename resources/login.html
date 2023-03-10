@@ -1,0 +1,27 @@
+<?php
+$layout = '_layout_auth';
+?>
+<main id="main">
+    <form action="/auth/login" method="post">
+        <h2>Login</h2>
+
+        <?php if($error){?>
+        <div class="error">
+            <?=$error?>
+        </div>
+        <?}?>
+
+        <div class="input-parent">
+            <label for="user">E-Mail</label>
+            <input type="text" name="user" id="user" value="<?=$user?>">
+        </div>
+
+        <div class="input-parent">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+        </div>
+
+        <button type="submit">Login</button>
+        <div class="actions"><a href="/auth/register">Register</a></div>
+    </form>
+</main>

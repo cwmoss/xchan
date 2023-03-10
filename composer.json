@@ -11,6 +11,7 @@
         "clue/framework-x": "dev-main",
         "seregazhuk/php-watcher": "dev-master",
         "clue/reactphp-sqlite": "^1.5",
-        "voryx/websocketmiddleware": "^2.0"
+        "voryx/websocketmiddleware": "^2.0",
+        "adhocore/jwt": "^1.1"
     }
 }

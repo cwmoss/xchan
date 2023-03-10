@@ -8,6 +8,8 @@ use Psr\Http\Message\ServerRequestInterface as R;
 use React\Http\Message\Response as P;
 
 use xchan\sqlite;
+use xchan\auth;
+
 use function xchan\dbg;
 use function xchan\template;
 
@@ -17,6 +19,7 @@ $db = $factory->openLazy(__DIR__ . '/../var/app.db');
 $broadcast = new ThroughStream();
 
 $store = new sqlite($db);
+$authstore = new auth\store($store);
 
 $ws = new WebSocketMiddleware(['/ws'], function (WebSocketConnection $conn) use ($broadcast) {
     $broadcast->on('data', function ($data) use ($conn) {
@@ -29,7 +32,8 @@ $ws = new WebSocketMiddleware(['/ws'], function (WebSocketConnection $conn) use 
         $broadcast->write($message);
     });
 });
-$auth = new xchan\auth;
+
+$auth = new xchan\auth($authstore, 'xchan', ['views' => __DIR__ . '/../resources']);
 
 $container = new FrameworkX\Container([]);
 $app = new FrameworkX\App($container, $ws, $auth);
@@ -40,7 +44,15 @@ dbg("running on $hostport");
 $app->get('/', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $posts = $store->select('SELECT * from posts ORDER BY created_at DESC LIMIT 50');
-    $html = template('posts', ['user' => $user, 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
+    $html = template('posts', ['user' => $user['user'], 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
+    return React\Http\Message\Response::html(
+        $html
+    );
+});
+
+$app->get('/options', function (R $request) use ($store, $hostport) {
+    $user = $request->getAttribute('user');
+    $html = template('options', ['user' => $user['user']], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );
@@ -76,7 +88,7 @@ $app->get('/posts/{id}', function (R $request) use ($store, $hostport) {
 
     $post = $store->select_first_row('SELECT * from posts WHERE id=:id', ['id' => $id]);
     $replies = $store->select('SELECT * from replies WHERE post_id=:id', ['id' => $id]);
-    $html = template('post', ['user' => $user, 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);
+    $html = template('post', ['user' => $user['user'], 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );

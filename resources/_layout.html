@@ -30,15 +30,38 @@
         [v-cloak] {
             display: none;
         }
+
+        #avatar {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+
+
+            background-color: aqua;
+            color: white;
+        }
+
+        #avatar .default {
+            font-size: 24px;
+            font-weight: bold;
+            padding-left: 4px;
+        }
     </style>
 
 </head>
 
 <body>
     <header>xchan
-
+        <div id="avatar"><a href="/options">
+                <div class="default">rw</div>
+            </a>
+        </div>
         <nav>hello
-            <?= $user ?>
+            <?php // var_dump($user)?>
+            <?= $user->name ?> <a href="/auth/logout">logout</a>
         </nav>
     </header>
 

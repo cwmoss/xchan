@@ -19,3 +19,14 @@ CREATE TABLE IF NOT EXISTS replies (
 # this is a comment
 
 until next boundary
+----
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    password TEXT,
+    refresh TEXT,
+    avatar TEXT,
+    created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+    updated_at INTEGER DEFAULT CURRENT_TIMESTAMP
+)

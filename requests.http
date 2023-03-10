@@ -1,6 +1,11 @@
 ###
 
 GET http://heinz:geheim@localhost:8081/users/hannelore
+Cookie: Name=Value
+
+###
+GET http://localhost:8081/auth/login
+
 
 ###
 POST http://randomguy:xxx@localhost:8081/posts

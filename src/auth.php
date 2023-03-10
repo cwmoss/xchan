@@ -8,20 +8,71 @@ use React\Http\Message\Response;
 
 class auth {
 
-    public $realm = 'xchan';
+    public $db;
+    public string $realm;
+    public array $opts;
     public $attribute = 'user';
+    private string $secret;
+    public $paths = [
+        '/auth/login', '/auth/register'
+    ];
+
+    public function __construct($db, string $realm, array $opts) {
+        $this->db = $db;
+        $this->realm = $realm;
+        $this->opts = array_merge(['on_error' => 'redirect'], $opts);
+        $this->secret = '123456abcd'; //  gen_secret();
+    }
 
     public function __invoke(ServerRequestInterface $request, callable $next) {
-        // optionally return response without passing to next handler
-        // return React\Http\Message\Response::plaintext("Done.\n");
 
-        // optionally modify request before passing to next handler
-        // $request = $request->withAttribute('admin', false);
-        $ip = $request->getServerParams()['REMOTE_ADDR'];
-        if ($ip === '127.0.0.1') {
-            //    return $next($request->withAttribute('is_local', true));
+        $cookies = $request->getCookieParams();
+        dbg(
+            "++ cookies",
+            $cookies,
+            (string) $request->getUri(),
+            $request->getUri()->getPath(),
+            $request->getMethod(),
+            $request->getRequestTarget()
+        );
+        $path = $request->getUri()->getPath();
+        if (in_array($path, $this->paths)) {
+            $html_or_user = $this->handle_service($path, $request->getMethod(), $request->getParsedBody() ?? []);
+            dbg("++ html or user", $html_or_user);
+            if (is_array($html_or_user)) {
+                $status = Response::STATUS_OK;
+                $hdrs = ['Set-Cookie' => cookie_value($this->realm, gen_jwt($this->secret, $html_or_user))];
+                // if redirect
+                $hdrs['Location'] = '/';
+                $status = Response::STATUS_FOUND;
+                return new Response(
+                    $status,
+                    $hdrs,
+                    'hello friend!'
+                );
+            } else {
+                return Response::html($html_or_user);
+            }
         }
+
+        $user = check_jwt($this->secret, $cookies[$this->realm] ?? null);
+        if ($user === false) {
+
+            return $this->unauthorized();
+        }
+
+        dbg("+ valid user", $user);
+        if ($path == '/auth/logout') {
+            $hdrs = ['Set-Cookie' => cookie_value($this->realm, $cookies[$this->realm], time() - (300 * 24 * 60 * 60))];
+            $html = template('logout', [], ['base' => $this->opts['views']]);
+            return new Response(Response::STATUS_OK, $hdrs, $html);
+        }
+        return $next($request->withAttribute($this->attribute, $user));
+
         dbg("headers", $request->getHeaders(), $request->getHeaderLine('Authorization'));
+
+        $resp =  $next($request);
+        return $resp->withAddedHeader('Set-Cookie', cookie_value($this->realm, 'toitoitoi'));
 
         $userpass = $this->parse_header($request->getHeaderLine('Authorization'));
         if (isset($userpass['username']) && $userpass['username']) {
@@ -30,12 +81,7 @@ class auth {
 
 
 
-        return new Response(
-            Response::STATUS_UNAUTHORIZED,
-            [
-                'WWW-Authenticate' => sprintf('Basic realm="%s"', $this->realm)
-            ]
-        );
+
 
         // call next handler in chain
         $response = $next($request);
@@ -47,25 +93,55 @@ class auth {
         return $response;
     }
 
-    /**
-     * Parses the authorization header for a basic authentication.
-     */
-    private function parse_header(string $header): ?array {
-        if (strpos($header, 'Basic') !== 0) {
-            return null;
+    public function unauthorized() {
+        if ($this->opts['on_error'] == 'redirect') {
+            return new Response(
+                Response::STATUS_FOUND,
+                [
+                    'Location' => '/auth/login'
+                ]
+            );
+        } else {
+            return new Response(
+                Response::STATUS_UNAUTHORIZED,
+                [],
+                'Please Login'
+            );
         }
+    }
+    public function handle_service($path, $method, $data = []) {
+        dbg("++ post data ", $data);
+        if ($path == '/auth/login') {
+            $data = $data + ['user' => '', 'password' => ''];
+            if ($method == 'GET') {
+                return template('login', [], ['base' => $this->opts['views']]);
+            } elseif ($method == 'POST') {
+                dbg("++ login", $data);
+                $login = $this->db->login_user($data['user'], $data['password']);
+                dbg("++ login", $login);
 
-        $header = base64_decode(substr($header, 6));
-
-        if ($header === false) {
-            return null;
+                if ($login === false) {
+                    $data['error'] = 'Login failed';
+                    return template('login', $data, ['base' => $this->opts['views']]);
+                } else {
+                    return $login;
+                }
+                // return ['name' => 'Hans', 'avatar' => 'ju'];
+            }
+        } elseif ($path == '/auth/register') {
+            $data = $data + ['email' => '', 'password' => ''];
+            if ($method == 'GET') {
+                return template('register', [], ['base' => $this->opts['views']]);
+            } elseif ($method == 'POST') {
+                $reg = new auth\registration($this->db);
+                $user_or_error = $reg->register($data);
+                if (is_string($user_or_error)) {
+                    $data['error'] = $user_or_error;
+                    return template('register', $data, ['base' => $this->opts['views']]);
+                } else {
+                    return $user_or_error;
+                }
+            }
         }
-
-        $header = explode(':', $header, 2);
-
-        return [
-            'username' => $header[0],
-            'password' => isset($header[1]) ? $header[1] : null,
-        ];
     }
 }
