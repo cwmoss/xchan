@@ -28,6 +28,7 @@ function Chatbox(props) {
         ],
         send_message(){
             console.log("send message", this.$refs.msg_input.innerHTML)
+            // this.$refs.audio.play()
             var newMessage = this.$refs.msg_input.innerHTML.replace(/\<div\>|\<br.*?\>/ig, '\n').
                 replace(/\<\/div\>/g, '').trim().
                 replace(/\n/g, '<br>')
@@ -49,6 +50,7 @@ function Chatbox(props) {
             console.log("chat mounted", window.ws)
             ws.onmessage = m => {
                 this.messages.push({who:'other', msg:m.data})
+                this.$refs.audio.play()
             }
         }
     }

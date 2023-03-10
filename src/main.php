@@ -7,6 +7,7 @@ use React\Stream\ThroughStream;
 use xchan\sqlite;
 use function xchan\dbg;
 use Psr\Http\Message\ServerRequestInterface as R;
+use React\Http\Message\Response as P;
 
 $factory = new Clue\React\SQLite\Factory();
 $db = $factory->openLazy(__DIR__ . '/../var/app.db');
@@ -42,6 +43,15 @@ $app->get('/', function (R $request) use ($store, $hostport) {
     $html = ob_get_clean();
     return React\Http\Message\Response::html(
         $html
+    );
+});
+
+$app->get('/audio', function (R $request) {
+
+    return new P(
+        P::STATUS_OK,
+        ['Content-Type' => 'audio/m4a'],
+        file_get_contents(__DIR__ . '/../resources/bling.m4a')
     );
 });
 

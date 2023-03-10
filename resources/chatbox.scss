@@ -54,6 +54,7 @@ $default-shadow-color: rgb(0, 0, 0);
 #chatbox {
     --avatar-size: 40px;
     --thread-offset: calc(20px + var(--avatar-size));
+    --chat-animation-duration: 0.2s
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -164,7 +165,7 @@ $default-shadow-color: rgb(0, 0, 0);
             border-radius: 4px;
             background: transparent;
             @include fancy-scrollbar;
-            scroll-behavior: smooth;
+            // scroll-behavior: smooth;
             li {
                 position: relative;
                 clear: both;
@@ -195,9 +196,9 @@ $default-shadow-color: rgb(0, 0, 0);
                 }
             }
             li.other {
-                animation: show-chat-odd 0.15s 1 ease-in;
-                -moz-animation: show-chat-odd 0.15s 1 ease-in;
-                -webkit-animation: show-chat-odd 0.15s 1 ease-in;
+                animation: show-chat-odd var(--chat-animation-duration) 1 ease-in;
+                -moz-animation: show-chat-odd var(--chat-animation-duration) 1 ease-in;
+                -webkit-animation: show-chat-odd var(--chat-animation-duration) 1 ease-in;
                 float: right;
                 margin-right: var(--thread-offset);
                 color: #0AD5C1;
@@ -212,9 +213,9 @@ $default-shadow-color: rgb(0, 0, 0);
                 right: -$chat-thread-msg-arrow-size;
             }
             li.self {
-                animation: show-chat-even 0.15s 1 ease-in;
-                -moz-animation: show-chat-even 0.15s 1 ease-in;
-                -webkit-animation: show-chat-even 0.15s 1 ease-in;
+                animation: show-chat-even var(--chat-animation-duration) 1 ease-in;
+                -moz-animation: show-chat-even var(--chat-animation-duration) 1 ease-in;
+                -webkit-animation: show-chat-even var(--chat-animation-duration) 1 ease-in;
                 float: left;
                 margin-left: var(--thread-offset);
                 color: #0EC879;
@@ -255,11 +256,30 @@ $default-shadow-color: rgb(0, 0, 0);
     }
 }
 
+/* Helper Class to hide text visually but keep it accessible for screen reader or other assistive software. */
+.visually-hidden {
+    // Move the text out of the flow of the container.
+    position: absolute;
+    
+    // Reduce its height and width to just one pixel.
+    height: 1px;
+    width: 1px;
+    
+    // Hide any overflowing elements or text.
+    overflow: hidden;
+    
+    // Clip the box to zero pixels.
+    clip: rect(0, 0, 0, 0);
+    
+    // Text won't wrap to a second line.
+    white-space: nowrap;
+}
+
 // Animation
 // --------------------------------------
 @keyframes show-chat-even {
     0% {
-        margin-left: -480px;
+        margin-left: -200px;
     }
     100% {
         margin-left: 0;
@@ -268,7 +288,7 @@ $default-shadow-color: rgb(0, 0, 0);
 
 @-moz-keyframes show-chat-even {
     0% {
-        margin-left: -480px;
+        margin-left: -200px;
     }
     100% {
         margin-left: 0;
@@ -277,7 +297,7 @@ $default-shadow-color: rgb(0, 0, 0);
 
 @-webkit-keyframes show-chat-even {
     0% {
-        margin-left: -480px;
+        margin-left: -200px;
     }
     100% {
         margin-left: 0;
@@ -286,7 +306,7 @@ $default-shadow-color: rgb(0, 0, 0);
 
 @keyframes show-chat-odd {
     0% {
-        margin-right: -480px;
+        margin-right: -200px;
     }
     100% {
         margin-right: 0;
@@ -295,7 +315,7 @@ $default-shadow-color: rgb(0, 0, 0);
 
 @-moz-keyframes show-chat-odd {
     0% {
-        margin-right: -480px;
+        margin-right: -200px;
     }
     100% {
         margin-right: 0;
@@ -304,7 +324,7 @@ $default-shadow-color: rgb(0, 0, 0);
 
 @-webkit-keyframes show-chat-odd {
     0% {
-        margin-right: -480px;
+        margin-right: -200px;
     }
     100% {
         margin-right: 0;
