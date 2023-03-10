@@ -1,8 +1,11 @@
 just playing...
 
     composer install
-    X_LISTEN=0.0.0.0:8081 php public/index.php 
-    
+    X_LISTEN=0.0.0.0:8081 php public/index.php
+
+    # login with any name
+    http://127.0.0.1:8081
+
     # test with websocat
     websocat ws://127.0.0.1:8081/ws
 

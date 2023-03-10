@@ -90,7 +90,11 @@
         }
     </script>
     <script>
-        var ws = new WebSocket('ws://<?= $hostport ?>/ws');
+        let url = new URL('/ws', window.location.href)
+        url.protocol = url.protocol.replace('http', 'ws')
+
+        // var ws = new WebSocket('ws://<?= $hostport ?>/ws');
+        var ws = new WebSocket(url.href)
 
         ws.onopen = x => console.log('opened', x);
 
