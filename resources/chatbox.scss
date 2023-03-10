@@ -164,6 +164,7 @@ $default-shadow-color: rgb(0, 0, 0);
             border-radius: 4px;
             background: transparent;
             @include fancy-scrollbar;
+            scroll-behavior: smooth;
             li {
                 position: relative;
                 clear: both;
