@@ -4,10 +4,12 @@ use Ratchet\RFC6455\Messaging\Message;
 use Voryx\WebSocketMiddleware\WebSocketConnection;
 use Voryx\WebSocketMiddleware\WebSocketMiddleware;
 use React\Stream\ThroughStream;
-use xchan\sqlite;
-use function xchan\dbg;
 use Psr\Http\Message\ServerRequestInterface as R;
 use React\Http\Message\Response as P;
+
+use xchan\sqlite;
+use function xchan\dbg;
+use function xchan\template;
 
 $factory = new Clue\React\SQLite\Factory();
 $db = $factory->openLazy(__DIR__ . '/../var/app.db');
@@ -38,9 +40,7 @@ dbg("running on $hostport");
 $app->get('/', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $posts = $store->select('SELECT * from posts ORDER BY created_at DESC LIMIT 50');
-    ob_start();
-    include(__DIR__ . '/../resources/posts.html');
-    $html = ob_get_clean();
+    $html = template('posts', ['user' => $user, 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );
@@ -76,9 +76,7 @@ $app->get('/posts/{id}', function (R $request) use ($store, $hostport) {
 
     $post = $store->select_first_row('SELECT * from posts WHERE id=:id', ['id' => $id]);
     $replies = $store->select('SELECT * from replies WHERE post_id=:id', ['id' => $id]);
-    ob_start();
-    include(__DIR__ . '/../resources/post.html');
-    $html = ob_get_clean();
+    $html = template('post', ['user' => $user, 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );

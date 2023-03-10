@@ -15,3 +15,21 @@ function dbg($txt, ...$vars) {
 
     error_log(join(' ', $log));
 }
+
+
+function template($name, $data, $context = []) {
+    $fname = "{$context['base']}/{$name}.html";
+    $layout = "";
+    extract($data);
+    ob_start();
+    include($fname);
+    $html = ob_get_clean();
+    if ($layout) {
+        $html = template(
+            $layout,
+            $data,
+            array_merge($context, ['from' => $name, 'content' => $html])
+        );
+    }
+    return $html;
+}

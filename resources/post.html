@@ -1,59 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>xchan</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-    <script src="https://unpkg.com/petite-vue" defer init></script>
-    <style>
-        aside{
-            margin-top: 2em;
-        }
-    </style>
-</head>
-<body>
-    <header>xchan <nav>hello <?=$user?><a href="/">← posts</a></nav>
+<?php
+$layout = '_layout';
+?>
 
-        
-    </header>
+<main>
+    <h1>
+        <?=$post['title']?>
+    </h1>
 
-    <main>
-        <h1><?=$post['title']?></h1>
-        
-        <div class="post--body"><?=$post['body']?></div>
-<div class="replies">
-    <?php foreach($replies as $reply){?>
-        <div class="reply"><?=$reply['body']?></div>
-    <?}?>
-</div>
+    <div class="post--body">
+        <?=$post['body']?>
+    </div>
+    <div class="replies">
+        <?php foreach($replies as $reply){?>
+        <div class="reply">
+            <?=$reply['body']?>
+        </div>
+        <?}?>
+    </div>
 </main>
-<aside>
-<input id="input">
-<div id="messages">
-
-</div>
-</aside>
-<script>
-    var ws = new WebSocket('ws://<?=$hostport?>/ws');
-
-    ws.onopen = x => console.log('opened', x);
-
-    var messages = document.getElementById('messages');
-    ws.onmessage = m => {
-        var newMsg = document.createElement('div');
-        newMsg.innerHTML = m.data;
-        messages.appendChild(newMsg);
-        console.log('message', m);
-    };
-
-    var input = document.getElementById('input');
-    input.onkeydown = e => {
-        if (e.keyCode == 13) {
-            ws.send(input.value);
-            input.value = '';
-        }
-    };
-</script>
-
-</body>
-</html>

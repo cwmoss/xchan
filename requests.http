@@ -1,6 +1,6 @@
 ###
 
-GET http://localhost:8081
+GET http://heinz:geheim@localhost:8081/users/hannelore
 
 ###
 POST http://randomguy:xxx@localhost:8081/posts
