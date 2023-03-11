@@ -55,19 +55,19 @@ class auth {
             }
         }
 
-        $user = check_jwt($this->secret, $cookies[$this->realm] ?? null);
-        if ($user === false) {
+        $tokendata = check_jwt($this->secret, $cookies[$this->realm] ?? null);
+        if ($tokendata === false) {
 
             return $this->unauthorized();
         }
 
-        dbg("+ valid user", $user);
+        dbg("+ valid user", $tokendata);
         if ($path == '/auth/logout') {
             $hdrs = ['Set-Cookie' => cookie_value($this->realm, $cookies[$this->realm], time() - (300 * 24 * 60 * 60))];
             $html = template('logout', [], ['base' => $this->opts['views']]);
             return new Response(Response::STATUS_OK, $hdrs, $html);
         }
-        return $next($request->withAttribute($this->attribute, $user));
+        return $next($request->withAttribute($this->attribute, new user($tokendata)));
 
         dbg("headers", $request->getHeaders(), $request->getHeaderLine('Authorization'));
 

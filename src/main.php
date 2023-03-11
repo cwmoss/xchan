@@ -44,7 +44,7 @@ dbg("running on $hostport");
 $app->get('/', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $posts = $store->select('SELECT * from posts ORDER BY created_at DESC LIMIT 50');
-    $html = template('posts', ['user' => $user['user'], 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
+    $html = template('posts', ['user' => $user, 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );
@@ -52,7 +52,7 @@ $app->get('/', function (R $request) use ($store, $hostport) {
 
 $app->get('/options', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
-    $html = template('options', ['user' => $user['user']], ['base' => __DIR__ . '/../resources']);
+    $html = template('options', ['user' => $user], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );
@@ -69,11 +69,12 @@ $app->get('/audio', function (R $request) {
 
 $app->post('/posts', function (R $request) use ($store, $hostport, $broadcast) {
     $user = $request->getAttribute('user');
+
     $data = json_decode((string) $request->getBody());
     $now = date("Y-m-d H:i:s");
     $store->insert("posts", [
         'title' => $data->title, 'body' => $data->body,
-        'created_by' => $user,
+        'created_by' => $user->name,
         'created_at' => $now, 'updated_at' => $now
     ]);
     $broadcast->write('new message: ' . $data->title);
@@ -85,10 +86,10 @@ $app->post('/posts', function (R $request) use ($store, $hostport, $broadcast) {
 $app->get('/posts/{id}', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $id = $request->getAttribute('id');
-
+    dbg("+++ the user", $user);
     $post = $store->select_first_row('SELECT * from posts WHERE id=:id', ['id' => $id]);
     $replies = $store->select('SELECT * from replies WHERE post_id=:id', ['id' => $id]);
-    $html = template('post', ['user' => $user['user'], 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);
+    $html = template('post', ['user' => $user, 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
         $html
     );

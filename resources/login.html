@@ -5,7 +5,7 @@ $layout = '_layout_auth';
     <form action="/auth/login" method="post">
         <h2>Login</h2>
 
-        <?php if($error){?>
+        <?php if($error??null){?>
         <div class="error">
             <?=$error?>
         </div>
@@ -13,7 +13,7 @@ $layout = '_layout_auth';
 
         <div class="input-parent">
             <label for="user">E-Mail</label>
-            <input type="text" name="user" id="user" value="<?=$user?>">
+            <input type="text" name="user" id="user" value="<?=$user??''?>">
         </div>
 
         <div class="input-parent">

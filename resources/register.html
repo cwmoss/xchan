@@ -5,14 +5,14 @@ $layout = '_layout_auth';
     <form action="/auth/register" method="post">
         <h2>Register</h2>
 
-        <?php if($error){?>
+        <?php if($error??null){?>
         <div class="error">
             <?=$error?>
         </div>
         <?}?>
         <div class="input-parent">
             <label for="email">E-Mail</label>
-            <input type="text" name="email" id="email" value="<?=$email?>">
+            <input type="text" name="email" id="email" value="<?=$email??null?>">
         </div>
 
         <div class="input-parent">
