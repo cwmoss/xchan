@@ -17,7 +17,7 @@ $base = __DIR__ . '/../';
 
 // sleep(2);
 // `touch $base/resources/testx.php`;
-
+`composer build`;
 
 $factory = new Clue\React\SQLite\Factory();
 $db = $factory->openLazy(__DIR__ . '/../var/app.db');

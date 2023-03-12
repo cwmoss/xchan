@@ -19,3 +19,7 @@ just playing...
 
     [ ] validations
     [ ] email
+    [ ] refresh token
+    [ ] pubsub
+    [ ] build/ watch
+    [ ] some load tests

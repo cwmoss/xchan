@@ -9,8 +9,8 @@
   },
   "scripts": {
     "build": [
-      "sassc -t compact public/assets/avatarcrop.scss public/assets/avatarcrop.css",
-      "sassc -t compact public/assets/chatbox.scss public/assets/chatbox.css"
+      "sassc -t nested public/assets/avatarcrop.scss public/assets/avatarcrop.css",
+      "sassc -t nested public/assets/chatbox.scss public/assets/chatbox.css"
     ]
   },
   "require": {
