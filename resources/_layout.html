@@ -1,3 +1,7 @@
+<?php
+
+use function xchan\style_tag;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,10 +21,12 @@
     <script src="https://unpkg.com/petite-vue" defer init></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
+    
+    <?=style_tag('/assets/chatbox.css')?>
+    <?=style_tag('/assets/avatarcrop.css')?>
 
-    <style>
-        <?=file_get_contents(__DIR__ . '/' . 'chatbox.css') ?>
-    </style>
     <style>
         :root {
             --button-base: #fddd34;
@@ -49,14 +55,26 @@
             font-weight: bold;
             padding-left: 4px;
         }
+        a{
+            color:black;
+        }
     </style>
 
 </head>
 
 <body>
-    <header>xchan
-        <div id="avatar"><a href="/options">
-                <div class="default">rw</div>
+    <header><a href="/">xchan</a>
+        <div id="avatar">
+            <a href="/options">
+                <?php
+
+        use function xchan\script_tag;
+
+ if($user->avatar){?>
+                    <img src="/avatar/<?=$user->avatar?>" class="avatar">
+                <?php }else{?>
+                <div class="default"><?=mb_substr($user->name, 0, 2)?></div>
+                <?php }?>
             </a>
         </div>
         <nav>hello
@@ -125,8 +143,11 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <?= file_get_contents(__DIR__ . '/chatbox-template.html') ?>
+ 
+    <?=script_tag('/assets/chatbox.js')?>
+    <?=script_tag('/assets/avatarcrop.js')?>
     <script>
-        <?= file_get_contents(__DIR__. '/chatbox.js') ?>
+        <?php # file_get_contents(__DIR__. '/avatarcrop.js') ?>
     </script>
 </body>
 

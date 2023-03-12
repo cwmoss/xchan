@@ -117,3 +117,107 @@ function cookie_value($name, $value, $expires = 0, $path = '/', $domain = false,
 
     return $headerValue;
 }
+
+function normalize_files_array($files = []) {
+    $normalized_array = [];
+
+    foreach ($files as $index => $file) {
+        if (!is_array($file['name'])) {
+            $normalized_array[$index][] = $file;
+            continue;
+        }
+
+        foreach ($file['name'] as $idx => $name) {
+            $normalized_array[$index][$idx] = [
+                'name' => $name,
+                'type' => $file['type'][$idx],
+                'tmp_name' => $file['tmp_name'][$idx],
+                'error' => $file['error'][$idx],
+                'size' => $file['size'][$idx]
+            ];
+        }
+    }
+
+    return $normalized_array;
+}
+
+function get_mime_type($file) {
+    $finfo = finfo_open();
+    $mimetype = finfo_file($finfo, $file, FILEINFO_MIME_TYPE);
+    $ext = finfo_file($finfo, $file, FILEINFO_EXTENSION);
+    $fext = explode("/", $ext)[0];
+    if ($fext == '???') {
+        $fext = "";
+    } elseif ($fext == 'jpeg') {
+        $fext = "jpg";
+    }
+
+    finfo_close($finfo);
+    return [$mimetype, $fext, $ext];
+}
+
+function stream_to_file($name) {
+    $tmpfname = tempnam(sys_get_temp_dir(), 'sh-');
+    #file_put_contents($tmpfname, file_get_contents('php://input'));
+
+    $in_stream = fopen("php://input", "rb");
+    $out_stream = fopen($tmpfname, "w+b");
+    $ok = stream_copy_to_stream($in_stream, $out_stream);
+    fclose($in_stream);
+    fclose($out_stream);
+
+    #$mime="";
+    $mime = get_mime_type($tmpfname);
+
+    $error = 0;
+    $size = filesize($tmpfname);
+
+    if (!$size) {
+        $error = UPLOAD_ERR_NO_FILE;
+    }
+    return [
+        'name' => $name,
+        'type' => 'stream',
+        'tmp_name' => $tmpfname,
+        'error' => $error,
+        'size' => $size,
+        'mime' => $mime,
+        'extension' => $mime[1]
+    ];
+}
+
+function get_image_dimensions($fname, $mime) {
+    $valid = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!in_array($mime, $valid)) {
+        return false;
+    }
+    $info = getimagesize($fname);
+    if (!$info) {
+        return false;
+    }
+    $info['xy'] = $info[0] . 'x' . $info[1];
+    return $info;
+}
+
+function script_tag($src, $attrs = "", $cb = null) {
+    $attrs = explode(" ", $attrs);
+    $attrs = array_filter($attrs, 'trim');
+    $attrs = array_reduce($attrs, function ($res, $attr) {
+        if ($attr == 'module') $attr = ['type', $attr];
+        $res[] = $attr;
+        return $res;
+    }, [['src', $src]]);
+    return html_tag('script', $attrs);
+}
+function style_tag($src, $cb = null) {
+    return html_tag('link', [['rel', 'stylesheet'], ['href', $src]]);
+}
+function html_tag($tag, $attrs = []) {
+    $attrs = array_reduce($attrs, function ($res, $item) {
+        if (is_array($item)) {
+            $item = sprintf('%s="%s"', $item[0], htmlspecialchars($item[1]));
+        }
+        return $res . " " . $item;
+    }, "");
+    return sprintf('<%s%s></%s>', $tag, $attrs, $tag);
+}

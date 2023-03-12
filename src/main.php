@@ -101,4 +101,35 @@ $app->get('/users/{name}', function (Psr\Http\Message\ServerRequestInterface $re
     );
 });
 
+
+$app->get('/xassets/{path}', function (R $request) {
+    dbg('+++ asset', $request->getAttribute('path'));
+    return React\Http\Message\Response::json(
+        ['res' => 'ok']
+    );
+});
+
+$app->get('/assets/{path}', new FrameworkX\FilesystemHandler(__DIR__ . '/../public/assets/'));
+$app->get('/avatar/{path}', new FrameworkX\FilesystemHandler(__DIR__ . '/../var/avatar/'));
+
+$app->post('/upload/avatar', function (R $request) use ($store) {
+    $user = $request->getAttribute('user');
+    $img = $request->getBody();
+    $dir = __DIR__ . '/../var/avatar/';
+    $old = $user->avatar;
+    $new = md5($user->name) . '-' . time() . '.png';
+    $fname =  $dir . $new;
+    file_put_contents($fname, $img);
+
+    dbg("+++ the user", $user);
+    $res = $store->query(
+        'UPDATE users SET avatar = :avatar WHERE name = :name',
+        ['name' => $user->name, 'avatar' => $new]
+    );
+    if ($old) unlink($dir . $old);
+    return React\Http\Message\Response::json(
+        ['res' => 'ok']
+    );
+});
+
 $app->run();
