@@ -13,6 +13,12 @@ use xchan\auth;
 use function xchan\dbg;
 use function xchan\template;
 
+$base = __DIR__ . '/../';
+
+// sleep(2);
+// `touch $base/resources/testx.php`;
+
+
 $factory = new Clue\React\SQLite\Factory();
 $db = $factory->openLazy(__DIR__ . '/../var/app.db');
 

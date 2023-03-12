@@ -1,17 +1,23 @@
 {
-    "autoload": {
-        "psr-4": {
-            "xchan\\":"src/"
-        },
-			"files": [
-				"src/helper.php"
-			]
+  "autoload": {
+    "psr-4": {
+      "xchan\\": "src/"
     },
-    "require": {
-        "clue/framework-x": "dev-main",
-        "seregazhuk/php-watcher": "dev-master",
-        "clue/reactphp-sqlite": "^1.5",
-        "voryx/websocketmiddleware": "^2.0",
-        "adhocore/jwt": "^1.1"
-    }
+    "files": [
+      "src/helper.php"
+    ]
+  },
+  "scripts": {
+    "build": [
+      "sassc -t compact public/assets/avatarcrop.scss public/assets/avatarcrop.css",
+      "sassc -t compact public/assets/chatbox.scss public/assets/chatbox.css"
+    ]
+  },
+  "require": {
+    "clue/framework-x": "dev-main",
+    "seregazhuk/php-watcher": "dev-master",
+    "clue/reactphp-sqlite": "^1.5",
+    "voryx/websocketmiddleware": "^2.0",
+    "adhocore/jwt": "^1.1"
+  }
 }
