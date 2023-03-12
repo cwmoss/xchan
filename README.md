@@ -17,6 +17,7 @@ just playing...
 
 ## TODO
 
+    [ ] auth
     [ ] validations
     [ ] email
     [ ] refresh token
