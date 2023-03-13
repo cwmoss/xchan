@@ -24,6 +24,12 @@ function template($name, $data, $context = []) {
     $fname = "{$context['base']}/{$name}.html";
     $layout = "";
     extract($data);
+    $stack = [];
+    $push = function ($thing) use (&$stack) {
+        $stack[] = $thing;
+    };
+    $stack2 = new stack();
+    $stack3 = $stack2->fun();
     ob_start();
     include($fname);
     $html = ob_get_clean();
@@ -31,12 +37,26 @@ function template($name, $data, $context = []) {
         $html = template(
             $layout,
             $data,
-            array_merge($context, ['from' => $name, 'content' => $html])
+            array_merge($context, [
+                'from' => $name, 'content' => $html, 'stack' => $stack,
+                'stack2' => $stack2, 'stack3' => $stack3
+            ])
         );
     }
     return $html;
 }
 
+class stack {
+    public array $s;
+    function push($thing) {
+        $this->s[] = $thing;
+    }
+    function fun() {
+        return function ($thing) {
+            $this->s[] = $thing;
+        };
+    }
+}
 function gen_secret($bytes = 32) {
     return rtrim(strtr(base64_encode(random_bytes($bytes)), '+/', '-_'), '=');
 }

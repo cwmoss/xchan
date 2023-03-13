@@ -1,97 +1,98 @@
 <?php
 $layout = '_layout';
-?>
-
+// $stack[] = "chat.js";
+$push('chat.js');
+$stack2->push('cchit..'); $stack3('chatccc.js'); $paul = "ok"; ?>
 <main>
-    <div v-scope="Panel()">
-        <button @click="click">New Post</button>
-        <div v-if="visible">
-            <form v-cloak v-scope="NewPost()" @submit.prevent="submitForm">
-                <div>
-                    <label>Title</label>
-                    <input type="text" name="title" required v-model="formData.title" />
-                </div>
-                <div>
-                    <label>Message</label>
-                    <textarea name="body" required v-model="formData.body"></textarea>
-                </div>
-                <div>{{ formMessage }}</div>
-                <button :disabled="formLoading">{{buttonText}}</button>
-            </form>
+  <div v-scope="Panel()">
+    <button @click="click">New Post</button>
+    <div v-if="visible">
+      <form v-cloak v-scope="NewPost()" @submit.prevent="submitForm">
+        <div>
+          <label>Title</label>
+          <input type="text" name="title" required v-model="formData.title" />
         </div>
+        <div>
+          <label>Message</label>
+          <textarea name="body" required v-model="formData.body"></textarea>
+        </div>
+        <div>{{ formMessage }}</div>
+        <button :disabled="formLoading">{{buttonText}}</button>
+      </form>
     </div>
-    <h1>posts</h1>
-    <?php foreach ($posts as $post) { ?>
-    <a href="/posts/<?= $post['id'] ?>">
-        <article>
-            <h4>
-                <?= $post['title'] ?>
-            </h4>
-            <p>
-                <?= $post['created_at'] ?> by
-                <?= $post['created_by'] ?> ...read
-            </p>
-        </article>
-    </a>
-    <?php } ?>
-
+  </div>
+  <h1>posts</h1>
+  <?php foreach ($posts as $post) { ?>
+  <a href="/posts/<?= $post['id'] ?>">
+    <article>
+      <h4>
+        <?= $post['title'] ?>
+      </h4>
+      <p>
+        <?= $post['created_at'] ?>
+        by
+        <?= $post['created_by'] ?>
+        ...read
+      </p>
+    </article>
+  </a>
+  <?php } ?>
 </main>
 
 <script>
-    function Panel() {
-        return {
-            visible: false,
-            click() {
-                this.visible = !this.visible
+  function Panel() {
+    return {
+      visible: false,
+      click() {
+        this.visible = !this.visible;
+      },
+    };
+  }
+
+  function NewPost() {
+    return {
+      formData: {
+        title: "",
+        body: "",
+      },
+
+      formLoading: false,
+      buttonText: "Submit",
+      formMessage: "",
+
+      submitForm() {
+        this.formLoading = true;
+        this.buttonText = "Submitting...";
+        console.log(JSON.stringify(this.formData));
+        this.formMessage = "";
+        fetch("/posts", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.formData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // make the promise be rejected if we didn't get a 2xx response
+              throw new Error("Not 2xx response", {
+                cause: response,
+              });
             }
-        }
-    }
-
-    function NewPost() {
-        return {
-            formData: {
-                title: "",
-                body: "",
-
-            },
-
-            formLoading: false,
-            buttonText: "Submit",
-            formMessage: "",
-
-            submitForm() {
-                this.formLoading = true;
-                this.buttonText = "Submitting...";
-                console.log(JSON.stringify(this.formData));
-                this.formMessage = "";
-                fetch('/posts', {
-                    method: "POST",
-                    credentials: "same-origin",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json",
-                    },
-                    body: JSON.stringify(this.formData),
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            // make the promise be rejected if we didn't get a 2xx response
-                            throw new Error("Not 2xx response", {
-                                cause: response
-                            });
-                        }
-                        this.formData.title = "";
-                        this.formData.body = "";
-                        this.formMessage = "Form successfully submitted.";
-                    })
-                    .catch(() => {
-                        this.formMessage = "Something went wrong.";
-                    })
-                    .finally(() => {
-                        this.formLoading = false
-                        this.buttonText = "Submit";
-                    });
-            },
-        };
-    }
+            this.formData.title = "";
+            this.formData.body = "";
+            this.formMessage = "Form successfully submitted.";
+          })
+          .catch(() => {
+            this.formMessage = "Something went wrong.";
+          })
+          .finally(() => {
+            this.formLoading = false;
+            this.buttonText = "Submit";
+          });
+      },
+    };
+  }
 </script>

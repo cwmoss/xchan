@@ -1,6 +1,8 @@
 <?php
 
 use function xchan\style_tag;
+use function xchan\script_tag;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +70,7 @@ use function xchan\style_tag;
             <a href="/options">
                 <?php
 
-        use function xchan\script_tag;
+       
 
  if($user->avatar){?>
                     <img src="/avatar/<?=$user->avatar?>" class="avatar">
@@ -82,7 +84,12 @@ use function xchan\style_tag;
             <?= $user->name ?> <a href="/auth/logout">logout</a>
         </nav>
     </header>
-
+<?php
+var_dump($context['stack']);
+var_dump($context['stack2']);
+var_dump($context['stack3']);
+var_dump($paul);
+?>
     <?=$context['content']?>
 
     <aside>

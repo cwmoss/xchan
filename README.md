@@ -24,3 +24,6 @@ just playing...
     [ ] pubsub
     [ ] build/ watch
     [ ] some load tests
+
+docker build -t xchan .
+docker run -it --rm -p 8080:8080 xchan
