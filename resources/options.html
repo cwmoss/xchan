@@ -8,15 +8,6 @@ $layout = '_layout';
   <div v-scope="Avatarcrop()" @vue:mounted="mounted" class="avatar-cropper">
     <button @click="pickImage">New Avatar</button>
     <div class="avatar-cropper-overlay" v-if="dataUrl">
-      <div class="avatar-cropper-mark" v-if="!inline">
-        <a
-          @click="cancel"
-          class="avatar-cropper-close"
-          title="Cancel"
-          href="javascript:;"
-          >&times;</a
-        >
-      </div>
       <div class="avatar-cropper-container">
         <div class="avatar-cropper-image-container">
           <img

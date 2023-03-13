@@ -1,15 +1,16 @@
 .avatar-cropper {
     .avatar-cropper-overlay {
-      text-align: center;
-      display: flex;
+      text-align: left;
+      // display: flex;
       align-items: center;
-      justify-content: center;
-      position: fixed;
+      // justify-content: center;
+      // position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       z-index: 99999;
+      margin-bottom:2rem;
     }
   
     .avatar-cropper-overlay-inline{
@@ -39,9 +40,10 @@
     }
   
     .avatar-cropper-container {
-      background: #fff;
+      margin:2rem 0;
+      background: transparent;
       z-index: 999;
-      box-shadow: 1px 1px 5px rgba(100, 100, 100, 0.14);
+      // box-shadow: 1px 1px 5px rgba(100, 100, 100, 0.14);
   
       .avatar-cropper-image-container {
         position: relative;
@@ -56,9 +58,9 @@
   
       .avatar-cropper-footer {
         display: flex;
-        align-items: stretch;
-        align-content: stretch;
-        justify-content: space-between;
+        align-items: flex-start;
+        // align-content: stretch;
+        // justify-content: space-between;
   
         .avatar-cropper-btn {
           width: 50%;
