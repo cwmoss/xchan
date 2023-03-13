@@ -49,6 +49,7 @@ dbg("running on $hostport");
 
 $app->get('/', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
+    dbg("++ path", $request->getUri()->getPath());
     $posts = $store->select('SELECT * from posts ORDER BY created_at DESC LIMIT 50');
     $html = template('posts', ['user' => $user, 'posts' => $posts], ['base' => __DIR__ . '/../resources']);
     return React\Http\Message\Response::html(
@@ -92,7 +93,7 @@ $app->post('/posts', function (R $request) use ($store, $hostport, $broadcast) {
 $app->get('/posts/{id}', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $id = $request->getAttribute('id');
-    dbg("+++ the user", $user);
+    dbg("+++ the user", $user, $request->getUri()->getPath());
     $post = $store->select_first_row('SELECT * from posts WHERE id=:id', ['id' => $id]);
     $replies = $store->select('SELECT * from replies WHERE post_id=:id', ['id' => $id]);
     $html = template('post', ['user' => $user, 'post' => $post, 'replies' => $replies], ['base' => __DIR__ . '/../resources']);

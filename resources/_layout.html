@@ -25,9 +25,9 @@ use function xchan\script_tag;
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
-    
-    <?=style_tag('/assets/chatbox.css')?>
-    <?=style_tag('/assets/avatarcrop.css')?>
+
+    <?= style_tag('/assets/chatbox.css', 'ts') ?>
+    <?= style_tag('/assets/avatarcrop.css', 'ts') ?>
 
     <style>
         :root {
@@ -57,8 +57,9 @@ use function xchan\script_tag;
             font-weight: bold;
             padding-left: 4px;
         }
-        a{
-            color:black;
+
+        a {
+            color: black;
         }
     </style>
 
@@ -70,27 +71,28 @@ use function xchan\script_tag;
             <a href="/options">
                 <?php
 
-       
 
- if($user->avatar){?>
-                    <img src="/avatar/<?=$user->avatar?>" class="avatar">
-                <?php }else{?>
-                <div class="default"><?=mb_substr($user->name, 0, 2)?></div>
-                <?php }?>
+
+                if ($user->avatar) { ?>
+                    <img src="/avatar/<?= $user->avatar ?>" class="avatar">
+                <?php } else { ?>
+                    <div class="default"><?= mb_substr($user->name, 0, 2) ?></div>
+                <?php } ?>
             </a>
         </div>
         <nav>hello
-            <?php // var_dump($user)?>
+            <?php // var_dump($user)
+            ?>
             <?= $user->name ?> <a href="/auth/logout">logout</a>
         </nav>
     </header>
-<?php
-var_dump($context['stack']);
-var_dump($context['stack2']);
-var_dump($context['stack3']);
-var_dump($paul);
-?>
-    <?=$context['content']?>
+    <?php
+    var_dump($context['stack']);
+    var_dump($context['stack2']);
+    var_dump($context['stack3']);
+    var_dump($paul);
+    ?>
+    <?= $context['content'] ?>
 
     <aside>
         <input id="input">
@@ -99,8 +101,7 @@ var_dump($paul);
         </div>
     </aside>
 
-    <div @vue:mounted="mounted" v-cloak v-scope="Chatbox({title:'Adminchat'})" id="chatbox"
-        :class="{enter:enter, expand:expand}"></div>
+    <div @vue:mounted="mounted" v-cloak v-scope="Chatbox({title:'Adminchat'})" id="chatbox" :class="{enter:enter, expand:expand}"></div>
 
     <script>
         function message(txt) {
@@ -116,7 +117,7 @@ var_dump($paul);
                 style: {
                     background: "linear-gradient(to right, #00b09b, #96c93d)",
                 },
-                onClick: function () { } // Callback after click
+                onClick: function() {} // Callback after click
             }).showToast();
         }
     </script>
@@ -150,11 +151,12 @@ var_dump($paul);
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <?= file_get_contents(__DIR__ . '/chatbox-template.html') ?>
- 
-    <?=script_tag('/assets/chatbox.js')?>
-    <?=script_tag('/assets/avatarcrop.js')?>
+
+    <?= script_tag('/assets/chatbox.js', '', 'ts') ?>
+    <?= script_tag('/assets/avatarcrop.js', '', 'ts') ?>
     <script>
-        <?php # file_get_contents(__DIR__. '/avatarcrop.js') ?>
+        <?php #file_get_contents(__DIR__ . '/avatarcrop.js') 
+        ?>
     </script>
 </body>
 

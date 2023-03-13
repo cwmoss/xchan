@@ -220,6 +220,7 @@ function get_image_dimensions($fname, $mime) {
 }
 
 function script_tag($src, $attrs = "", $cb = null) {
+    if ($cb == 'ts') $src .= '?ts=' . \time();
     $attrs = explode(" ", $attrs);
     $attrs = array_filter($attrs, 'trim');
     $attrs = array_reduce($attrs, function ($res, $attr) {
@@ -230,6 +231,7 @@ function script_tag($src, $attrs = "", $cb = null) {
     return html_tag('script', $attrs);
 }
 function style_tag($src, $cb = null) {
+    if ($cb == 'ts') $src .= '?ts=' . \time();
     return html_tag('link', [['rel', 'stylesheet'], ['href', $src]]);
 }
 function html_tag($tag, $attrs = []) {
