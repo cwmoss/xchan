@@ -12,7 +12,7 @@ https://stackoverflow.com/questions/38274111/psr-7-attributes-on-response-object
 
 class auth {
 
-    public $db;
+    public auth\store $db;
     public string $realm;
     public array $opts;
     public $attribute = 'user';
@@ -21,11 +21,12 @@ class auth {
         '/auth/login', '/auth/register'
     ];
 
-    public function __construct($db, string $realm, array $opts) {
+    public function __construct(auth\store $db, string $secret, string $realm, array $opts) {
         $this->db = $db;
         $this->realm = $realm;
         $this->opts = array_merge(['on_error' => 'redirect'], $opts);
-        $this->secret = '123456abcd'; //  gen_secret();
+        $this->secret = $secret;
+        // $this->secret = '123456abcd'; //  gen_secret();
     }
 
     public function __invoke(ServerRequestInterface $request, callable $next) {

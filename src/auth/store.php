@@ -2,13 +2,14 @@
 
 namespace xchan\auth;
 
+use xchan\sqlite;
 use function xchan\dbg;
 
 class store {
 
-    public $db;
+    public sqlite $db;
 
-    public function __construct($db) {
+    public function __construct(sqlite $db) {
         $this->db = $db;
     }
 
