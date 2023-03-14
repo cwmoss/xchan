@@ -6,6 +6,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 
+/*
+https://stackoverflow.com/questions/38274111/psr-7-attributes-on-response-object
+*/
+
 class auth {
 
     public $db;
@@ -38,7 +42,7 @@ class auth {
         $path = $request->getUri()->getPath();
         if (in_array($path, $this->paths)) {
             $html_or_user = $this->handle_service($path, $request->getMethod(), $request->getParsedBody() ?? []);
-            dbg("++ html or user", $html_or_user);
+            // dbg("++ html or user", $html_or_user);
             if (is_array($html_or_user)) {
                 $status = Response::STATUS_OK;
                 $hdrs = ['Set-Cookie' => cookie_value($this->realm, gen_jwt($this->secret, $html_or_user))];
@@ -67,30 +71,18 @@ class auth {
             $html = template('logout', [], ['base' => $this->opts['views']]);
             return new Response(Response::STATUS_OK, $hdrs, $html);
         }
-        return $next($request->withAttribute($this->attribute, new user($tokendata)));
 
-        dbg("headers", $request->getHeaders(), $request->getHeaderLine('Authorization'));
+        $user = new user($tokendata);
+        $resp = $next($request->withAttribute($this->attribute, $user));
 
-        $resp =  $next($request);
-        return $resp->withAddedHeader('Set-Cookie', cookie_value($this->realm, 'toitoitoi'));
-
-        $userpass = $this->parse_header($request->getHeaderLine('Authorization'));
-        if (isset($userpass['username']) && $userpass['username']) {
-            return $next($request->withAttribute($this->attribute, $userpass['username']));
+        dbg('+++ user update 000', $user);
+        if ($user->has_changes) {
+            dbg('+++ user update', $user);
+            $updated_jwt = cookie_value($this->realm, gen_jwt($this->secret, ['name' => $user->name, 'avatar' => $user->avatar]));
+            dbg('new jwt', $updated_jwt);
+            return $resp->withHeader('Set-Cookie', $updated_jwt);
         }
-
-
-
-
-
-        // call next handler in chain
-        $response = $next($request);
-        assert($response instanceof ResponseInterface);
-
-        // optionally modify response before returning to previous handler
-        // $response = $response->withHeader('Content-Type', 'text/plain');
-
-        return $response;
+        return $resp;
     }
 
     public function unauthorized() {

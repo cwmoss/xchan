@@ -36,15 +36,6 @@ class auth {
                 'WWW-Authenticate' => sprintf('Basic realm="%s"', $this->realm)
             ]
         );
-
-        // call next handler in chain
-        $response = $next($request);
-        assert($response instanceof ResponseInterface);
-
-        // optionally modify response before returning to previous handler
-        // $response = $response->withHeader('Content-Type', 'text/plain');
-
-        return $response;
     }
 
     /**

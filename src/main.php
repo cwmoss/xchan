@@ -60,6 +60,8 @@ $app->get('/', function (R $request) use ($store, $hostport) {
 $app->get('/options', function (R $request) use ($store, $hostport) {
     $user = $request->getAttribute('user');
     $html = template('options', ['user' => $user], ['base' => __DIR__ . '/../resources']);
+    $res = new P;
+    # $res->
     return React\Http\Message\Response::html(
         $html
     );
@@ -133,6 +135,8 @@ $app->post('/upload/avatar', function (R $request) use ($store) {
         'UPDATE users SET avatar = :avatar WHERE name = :name',
         ['name' => $user->name, 'avatar' => $new]
     );
+    $user->update_avatar($new);
+
     if ($old) unlink($dir . $old);
     return React\Http\Message\Response::json(
         ['res' => 'ok']

@@ -25,7 +25,10 @@ function Avatarcrop() {
               `Server returned ${response.status}: ${response.statusText}`
             );
         })
-        .then((response) => console.log(response.text()))
+        .then((response) => {
+          console.log(response.text())
+          window.location.reload()
+        })
         .catch((err) => {
           alert(err);
         });
