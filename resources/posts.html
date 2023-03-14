@@ -3,41 +3,42 @@ $layout = '_layout';
 // $stack[] = "chat.js";
 $push('chat.js');
 $stack2->push('cchit..'); $stack3('chatccc.js'); $paul = "ok"; ?>
-<main>
-  <div v-scope="Panel()">
-    <button @click="click">New Post</button>
-    <div v-if="visible">
-      <form v-cloak v-scope="NewPost()" @submit.prevent="submitForm">
-        <div>
-          <label>Title</label>
-          <input type="text" name="title" required v-model="formData.title" />
-        </div>
-        <div>
-          <label>Message</label>
-          <textarea name="body" required v-model="formData.body"></textarea>
-        </div>
-        <div>{{ formMessage }}</div>
-        <button :disabled="formLoading">{{buttonText}}</button>
-      </form>
-    </div>
+
+<div v-scope="Panel()">
+  <span @click="click" role="button">New Post</span>
+  <div v-if="visible">
+    <form v-cloak v-scope="NewPost()" @submit.prevent="submitForm">
+      <div>
+        <label>Title</label>
+        <input type="text" name="title" required v-model="formData.title" />
+      </div>
+      <div>
+        <label>Message</label>
+        <textarea name="body" required v-model="formData.body"></textarea>
+      </div>
+      <div>{{ formMessage }}</div>
+      <button :disabled="formLoading" :aria-busy="formLoading">
+        {{buttonText}}
+      </button>
+    </form>
   </div>
-  <h1>posts</h1>
-  <?php foreach ($posts as $post) { ?>
-  <a href="/posts/<?= $post['id'] ?>">
-    <article>
-      <h4>
-        <?= $post['title'] ?>
-      </h4>
-      <p>
-        <?= $post['created_at'] ?>
-        by
-        <?= $post['created_by'] ?>
-        ...read
-      </p>
-    </article>
-  </a>
-  <?php } ?>
-</main>
+</div>
+<h1>posts</h1>
+<?php foreach ($posts as $post) { ?>
+<a href="/posts/<?= $post['id'] ?>">
+  <article>
+    <h4>
+      <?= $post['title'] ?>
+    </h4>
+    <p>
+      <?= $post['created_at'] ?>
+      by
+      <?= $post['created_by'] ?>
+      ...read
+    </p>
+  </article>
+</a>
+<?php } ?>
 
 <script>
   function Panel() {

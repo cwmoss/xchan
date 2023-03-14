@@ -5,10 +5,12 @@ use function xchan\script_tag;
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="dark light" name="color-scheme" >
     <title>xchan</title>
     <link rel="shortcut icon" href="data:image/svg+xml;base64,<?= base64_encode(trim('
     <svg version=" 1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -21,11 +23,13 @@ use function xchan\script_tag;
     </svg>')) ?>">
     <!-- link rel="shortcut icon" href="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='.8%20.8%2014.4%2014.4'%3e%3cpath%20d='M10%208.99a1%201%200%2000-.695%201.717l4.004%204a1%201%200%20101.414-1.414l-4.004-4A1%201%200%200010%208.99z'%20fill='%2380b0ff'%20stroke='%235D7FDDaa'%20stroke-width='.3'/%3e%3cpath%20d='M6.508%201C3.48%201%201.002%203.474%201.002%206.5S3.48%2012%206.508%2012s5.504-2.474%205.504-5.5S9.536%201%206.508%201zm0%202a3.486%203.486%200%20013.504%203.5c0%201.944-1.556%203.5-3.504%203.5a3.488%203.488%200%2001-3.506-3.5C3.002%204.556%204.56%203%206.508%203z'%20fill='%2380b0ff'%20stroke='%235D7FDDaa'%20stroke-width='.3'/%3e%3c/svg%3e" -->
     <script src="https://unpkg.com/petite-vue" defer init></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <!-- link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
 
+    <?= style_tag('https://unpkg.com/open-props/easings.min.css') ?>
+    <?= style_tag('/assets/pico.css', 'ts') ?>
     <?= style_tag('/assets/chatbox.css', 'ts') ?>
     <?= style_tag('/assets/avatarcrop.css', 'ts') ?>
 
@@ -39,9 +43,12 @@ use function xchan\script_tag;
             display: none;
         }
 
+        .avatar-el{
+            min-width: 60px;
+        }
         #avatar {
             position: absolute;
-            top: 16px;
+            top: 12px;
             right: 16px;
             border-radius: 50%;
             width: 50px;
@@ -58,15 +65,145 @@ use function xchan\script_tag;
             padding-left: 4px;
         }
 
-        a {
-            color: black;
-        }
+        
+  .sun-and-moon > :is(.moon, .sun, .sun-beams) {
+    transform-origin: center center;
+  }
+  .sun-and-moon > :is(.moon, .sun) {
+    fill: var(--icon-fill);
+  }
+  .theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
+    fill: var(--icon-fill-hover);
+  }
+  .sun-and-moon > .sun-beams {
+    stroke: var(--icon-fill);
+    stroke-width: 2px;
+  }
+  .theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
+    stroke: var(--icon-fill-hover);
+  }
+  [data-theme="dark"] .sun-and-moon > .sun {
+    transform: scale(1.75);
+  }
+  [data-theme="dark"] .sun-and-moon > .sun-beams {
+    opacity: 0;
+  }
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    transform: translate(-7px);
+  }
+  @supports (cx: 1) {
+    [data-theme="dark"] .sun-and-moon > .moon > circle {
+      transform: translate(0);
+      cx: 17;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sun-and-moon > .sun {
+      transition: transform 0.5s var(--ease-elastic-3);
+    }
+    .sun-and-moon > .sun-beams {
+      transition: transform 0.5s var(--ease-elastic-4),
+        opacity 0.5s var(--ease-3);
+    }
+    .sun-and-moon .moon > circle {
+      transition: transform 0.25s var(--ease-out-5);
+    }
+    @supports (cx: 1) {
+      .sun-and-moon .moon > circle {
+        transition: cx 0.25s var(--ease-out-5);
+      }
+    }
+    [data-theme="dark"] .sun-and-moon > .sun {
+      transform: scale(1.75);
+      transition-timing-function: var(--ease-3);
+      transition-duration: 0.25s;
+    }
+    [data-theme="dark"] .sun-and-moon > .sun-beams {
+      transform: rotate(-25deg);
+      transition-duration: 0.15s;
+    }
+    [data-theme="dark"] .sun-and-moon > .moon > circle {
+      transition-delay: 0.25s;
+      transition-duration: 0.5s;
+    }
+  }
+  .theme-toggle {
+    --size: 2rem;
+    --icon-fill: hsl(210 10% 30%);
+    --icon-fill-hover: hsl(210 10% 15%);
+    background: none;
+    border: none;
+    padding: 0;
+    inline-size: var(--size);
+    block-size: var(--size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    outline-offset: 5px;
+  }
+  .theme-toggle > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    stroke-linecap: round;
+  }
+  [data-theme="dark"] .theme-toggle {
+    --icon-fill: hsl(210 10% 70%);
+    --icon-fill-hover: hsl(210 15% 90%);
+  }
     </style>
 
 </head>
 
 <body>
-    <header><a href="/">xchan</a>
+    
+        <nav class="container-fluid">
+            <ul>
+              <li><strong><a href="/">xchan</a></strong></li>
+               <li>hello <?= $user->name ?></li> 
+            </ul>
+              <ul>
+                <li> <a href="/auth/logout">logout</a></li>
+                <li><button
+                    title="Toggles light & dark"
+                    aria-label="auto"
+                    aria-live="polite"
+                    class="theme-toggle"
+                    id="theme-toggle"
+                  >
+                    <svg
+                      viewbox="0 0 24 24"
+                      aria-hidden="true"
+                      class="sun-and-moon"
+                      height="24"
+                      width="24"
+                    >
+                      <mask class="moon" id="moon-mask">
+                        <rect fill="white" height="100%" width="100%" x="0" y="0" />
+                        <circle cx="24" cy="10" fill="black" r="6" />
+                      </mask>
+                      <circle
+                        class="sun"
+                        cx="12"
+                        cy="12"
+                        fill="currentColor"
+                        mask="url(#moon-mask)"
+                        r="6"
+                      />
+                      <g class="sun-beams" stroke="currentColor">
+                        <line x1="12" x2="12" y1="1" y2="3" />
+                        <line x1="12" x2="12" y1="21" y2="23" />
+                        <line x1="4.22" x2="5.64" y1="4.22" y2="5.64" />
+                        <line x1="18.36" x2="19.78" y1="18.36" y2="19.78" />
+                        <line x1="1" x2="3" y1="12" y2="12" />
+                        <line x1="21" x2="23" y1="12" y2="12" />
+                        <line x1="4.22" x2="5.64" y1="19.78" y2="18.36" />
+                        <line x1="18.36" x2="19.78" y1="5.64" y2="4.22" />
+                      </g>
+                    </svg>
+                  </button></li>
+                <li class="avatar-el">
         <div id="avatar">
             <a href="/options">
                 <?php
@@ -80,27 +217,25 @@ use function xchan\script_tag;
                 <?php } ?>
             </a>
         </div>
-        <nav>hello
-            <?php // var_dump($user)
-            ?>
-            <?= $user->name ?> <a href="/auth/logout">logout</a>
-        </nav>
-    </header>
-    <?php
-    var_dump($context['stack']);
-    var_dump($context['stack2']);
-    var_dump($context['stack3']);
-    var_dump($paul);
-    ?>
-    <?= $context['content'] ?>
-
-    <aside>
+    </li></ul>
+        
+    </nav>
+    <main class="container">
+        <div class="grid"><section>
+    <?= $context['content'] ?></section>
+    <aside class="container">
         <input id="input">
         <div id="messages">
 
         </div>
     </aside>
+</div>
+    </main>
+    
 
+    <footer class="container">
+       <small> xchan is powered by Framework X</small>
+    </footer>
     <div @vue:mounted="mounted" v-cloak v-scope="Chatbox({title:'Adminchat'})" id="chatbox" :class="{enter:enter, expand:expand}"></div>
 
     <script>
@@ -154,6 +289,7 @@ use function xchan\script_tag;
 
     <?= script_tag('/assets/chatbox.js', '', 'ts') ?>
     <?= script_tag('/assets/avatarcrop.js', '', 'ts') ?>
+    <?= script_tag('/assets/theme-toggle.js', '', 'ts') ?>
     <script>
         <?php #file_get_contents(__DIR__ . '/avatarcrop.js') 
         ?>

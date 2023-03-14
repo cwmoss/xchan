@@ -2,19 +2,17 @@
 $layout = '_layout';
 ?>
 
-<main>
-    <h1>
-        <?=$post['title']?>
-    </h1>
+<h1>
+  <?=$post['title']?>
+</h1>
 
-    <div class="post--body">
-        <?=$post['body']?>
-    </div>
-    <div class="replies">
-        <?php foreach($replies as $reply){?>
-        <div class="reply">
-            <?=$reply['body']?>
-        </div>
-        <?php } ?>
-    </div>
-</main>
+<div class="post--body">
+  <?=$post['body']?>
+</div>
+<div class="replies">
+  <?php foreach($replies as $reply){?>
+  <div class="reply">
+    <?=$reply['body']?>
+  </div>
+  <?php } ?>
+</div>

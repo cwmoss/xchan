@@ -2,37 +2,35 @@
 $layout = '_layout';
 ?>
 
-<main>
-  <h1><?=$user->name?></h1>
+<h1><?=$user->name?></h1>
 
-  <div v-scope="Avatarcrop()" @vue:mounted="mounted" class="avatar-cropper">
-    <button @click="pickImage">New Avatar</button>
-    <div class="avatar-cropper-overlay" v-if="dataUrl">
-      <div class="avatar-cropper-container">
-        <div class="avatar-cropper-image-container">
-          <img
-            ref="img"
-            :src="dataUrl"
-            alt
-            @load.stop="create_cropper"
-            @error="onImgElementError"
-          />
-        </div>
-      </div>
-      <div class="avatar-cropper-footer">
-        <button @click="cancel" class="avatar-cropper-btn">Cancel</button>
-
-        <button @click="upload" class="avatar-cropper-btn">Submit</button>
+<div v-scope="Avatarcrop()" @vue:mounted="mounted" class="avatar-cropper">
+  <button @click="pickImage">New Avatar</button>
+  <div class="avatar-cropper-overlay" v-if="dataUrl">
+    <div class="avatar-cropper-container">
+      <div class="avatar-cropper-image-container">
+        <img
+          ref="img"
+          :src="dataUrl"
+          alt
+          @load.stop="create_cropper"
+          @error="onImgElementError"
+        />
       </div>
     </div>
-    <input
-      v-if="!file"
-      accept="image/png, image/gif, image/jpeg"
-      capture="user"
-      class="avatar-cropper-img-input"
-      ref="input"
-      type="file"
-      @change="onFileInputChange"
-    />
+    <div class="avatar-cropper-footer">
+      <button @click="cancel" class="avatar-cropper-btn">Cancel</button>
+
+      <button @click="upload" class="avatar-cropper-btn">Submit</button>
+    </div>
   </div>
-</main>
+  <input
+    v-if="!file"
+    accept="image/png, image/gif, image/jpeg"
+    capture="user"
+    class="avatar-cropper-img-input"
+    ref="input"
+    type="file"
+    @change="onFileInputChange"
+  />
+</div>
