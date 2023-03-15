@@ -1,27 +1,37 @@
 <?php
 $layout = '_layout_auth';
 ?>
-<main id="main">
-    <form action="/auth/register" method="post">
-        <h2>Register</h2>
 
-        <?php if($error??null){?>
-        <div class="error">
-            <?=$error?>
-        </div>
-        <?php } ?>
-        <div class="input-parent">
-            <label for="email">E-Mail</label>
-            <input type="text" name="email" id="email" value="<?=$email??null?>">
-        </div>
+<article class="grid register-page">
 
-        <div class="input-parent">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password">
-        </div>
+    <div>
+        <hgroup>
+            <h1>Register</h1>
+            <h2></h2>
+        </hgroup>
 
-        <button type="submit">Register</button>
+        <form action="/auth/register" method="post">
 
-        <div class="actions"><a href="/auth/login">Login</a></div>
-    </form>
-</main>
+
+            <?php if($error??null){?>
+            <div class="error">
+                <?=$error?>
+            </div>
+            <?php } ?>
+            <div class="input-parent">
+                <label for="email">E-Mail</label>
+                <input type="text" name="email" id="email" value="<?=$email??null?>">
+            </div>
+
+            <div class="input-parent">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+            </div>
+
+            <button type="submit" class="contrast">Register</button>
+
+            <div class="actions"><a href="/auth/login">Login</a></div>
+        </form>
+    </div>
+    <div></div>
+</article>

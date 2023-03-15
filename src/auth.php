@@ -41,6 +41,11 @@ class auth {
             $request->getRequestTarget()
         );
         $path = $request->getUri()->getPath();
+
+        if (str_starts_with($path, '/assets/')) {
+            return $next($request);
+        }
+
         if (in_array($path, $this->paths)) {
             $html_or_user = $this->handle_service($path, $request->getMethod(), $request->getParsedBody() ?? []);
             // dbg("++ html or user", $html_or_user);

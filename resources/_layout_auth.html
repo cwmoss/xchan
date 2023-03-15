@@ -1,137 +1,269 @@
+<?php
+
+use function xchan\style_tag;
+use function xchan\script_tag;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="dark light" name="color-scheme">
+    <title>xchan</title>
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,<?= base64_encode(trim('
+    <svg version=" 1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path
+        d="M21.010 18.399c1.431-1.275 2.24-2.974 2.24-4.738 0-1.874-0.877-3.627-2.471-4.936-1.55-1.274-3.603-1.975-5.779-1.975s-4.229 0.701-5.779 1.975c-1.593 1.309-2.471 3.062-2.471 4.936s0.877 3.627 2.471 4.936c1.55 1.273 3.603 1.975 5.779 1.975 0.29 0 0.582-0.013 0.871-0.038l0.494 0.428c1.634 1.422 3.783 2.288 6.134 2.288h0.75v-1.596l-0.22-0.22c-0.844-0.847-1.527-1.855-1.998-2.974l-0.023-0.061zM17.348 19.828l-0.992-0.86-0.331 0.041c-0.308 0.040-0.664 0.062-1.025 0.062h-0c-3.722 0-6.75-2.427-6.75-5.411s3.028-5.411 6.75-5.411 6.75 2.427 6.75 5.411c0 1.486-0.742 2.874-2.088 3.907l-0.432 0.331 0.199 0.564c0.439 1.219 1.040 2.272 1.792 3.199l-0.016-0.020c-1.493-0.255-2.805-0.899-3.867-1.823l0.010 0.008z">
+    </path>
+    <path
+        d="M2.821 14.882c0.672-0.845 1.225-1.823 1.609-2.882l0.023-0.072 0.198-0.561-0.432-0.331c-1.27-0.974-1.969-2.282-1.969-3.682 0-2.814 2.86-5.103 6.375-5.103 2.586 0 4.817 1.239 5.816 3.014 0.185-0.009 0.372-0.014 0.559-0.014q0.564 0 1.117 0.055c-0.386-1-1.056-1.913-1.978-2.67-1.48-1.215-3.438-1.885-5.514-1.885s-4.035 0.669-5.514 1.885c-1.522 1.251-2.361 2.926-2.361 4.718 0 1.678 0.766 3.295 2.121 4.511-0.467 1.107-1.109 2.052-1.902 2.847l-0.219 0.219v1.57h0.75c1.456-0 2.831-0.349 4.046-0.967l-0.051 0.023c-0.128-0.466-0.213-1.006-0.237-1.562l-0.001-0.015c-0.702 0.419-1.519 0.733-2.39 0.895l-0.046 0.007z">
+    </path>
+    </svg>')) ?>">
+    <!-- link rel="shortcut icon" href="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='.8%20.8%2014.4%2014.4'%3e%3cpath%20d='M10%208.99a1%201%200%2000-.695%201.717l4.004%204a1%201%200%20101.414-1.414l-4.004-4A1%201%200%200010%208.99z'%20fill='%2380b0ff'%20stroke='%235D7FDDaa'%20stroke-width='.3'/%3e%3cpath%20d='M6.508%201C3.48%201%201.002%203.474%201.002%206.5S3.48%2012%206.508%2012s5.504-2.474%205.504-5.5S9.536%201%206.508%201zm0%202a3.486%203.486%200%20013.504%203.5c0%201.944-1.556%203.5-3.504%203.5a3.488%203.488%200%2001-3.506-3.5C3.002%204.556%204.56%203%206.508%203z'%20fill='%2380b0ff'%20stroke='%235D7FDDaa'%20stroke-width='.3'/%3e%3c/svg%3e" -->
+    <script src="https://unpkg.com/petite-vue" defer init></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
+    <?= style_tag('https://unpkg.com/open-props/easings.min.css') ?>
+    <?= style_tag('/assets/pico.css', 'ts') ?>
+
+
     <style>
-        *,
-        *:before,
-        *:after {
-            margin: 0;
+        :root {
+            --button-base: #fddd34;
+            --selection: #fddd34;
+        }
+
+        /* Light-blue Light scheme (Default) */
+        /* Can be forced with data-theme="light" */
+        [data-theme="light"],
+        :root:not([data-theme="dark"]) {
+            --primary: #039be5;
+            --primary-hover: #0288d1;
+            --primary-focus: rgba(3, 155, 229, 0.125);
+            --primary-inverse: #FFF;
+            --card-box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 3px 0px;
+        }
+
+        /* Light-blue Dark scheme (Auto) */
+        /* Automatically enabled if user has Dark mode enabled */
+        @media only screen and (prefers-color-scheme: dark) {
+            :root:not([data-theme]) {
+                --primary: #039be5;
+                --primary-hover: #03a9f4;
+                --primary-focus: rgba(3, 155, 229, 0.25);
+                --primary-inverse: #FFF;
+            }
+        }
+
+        /* Light-blue Dark scheme (Forced) */
+        /* Enabled if forced with data-theme="dark" */
+        [data-theme="dark"] {
+            --primary: #039be5;
+            --primary-hover: #03a9f4;
+            --primary-focus: rgba(3, 155, 229, 0.25);
+            --primary-inverse: #FFF;
+        }
+
+        /* Light-blue (Common styles) */
+        :root {
+            --form-element-active-border-color: var(--primary);
+            --form-element-focus-color: var(--primary-focus);
+            --switch-color: var(--primary-inverse);
+            --switch-checked-background-color: var(--primary);
+        }
+
+        .sun-and-moon> :is(.moon, .sun, .sun-beams) {
+            transform-origin: center center;
+        }
+
+        .sun-and-moon> :is(.moon, .sun) {
+            fill: var(--icon-fill);
+        }
+
+        .theme-toggle:is(:hover, :focus-visible)>.sun-and-moon> :is(.moon, .sun) {
+            fill: var(--icon-fill-hover);
+        }
+
+        .sun-and-moon>.sun-beams {
+            stroke: var(--icon-fill);
+            stroke-width: 2px;
+        }
+
+        .theme-toggle:is(:hover, :focus-visible) .sun-and-moon>.sun-beams {
+            stroke: var(--icon-fill-hover);
+        }
+
+        [data-theme="dark"] .sun-and-moon>.sun {
+            transform: scale(1.75);
+        }
+
+        [data-theme="dark"] .sun-and-moon>.sun-beams {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .sun-and-moon>.moon>circle {
+            transform: translate(-7px);
+        }
+
+        @supports (cx: 1) {
+            [data-theme="dark"] .sun-and-moon>.moon>circle {
+                transform: translate(0);
+                cx: 17;
+            }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .sun-and-moon>.sun {
+                transition: transform 0.5s var(--ease-elastic-3);
+            }
+
+            .sun-and-moon>.sun-beams {
+                transition: transform 0.5s var(--ease-elastic-4),
+                    opacity 0.5s var(--ease-3);
+            }
+
+            .sun-and-moon .moon>circle {
+                transition: transform 0.25s var(--ease-out-5);
+            }
+
+            @supports (cx: 1) {
+                .sun-and-moon .moon>circle {
+                    transition: cx 0.25s var(--ease-out-5);
+                }
+            }
+
+            [data-theme="dark"] .sun-and-moon>.sun {
+                transform: scale(1.75);
+                transition-timing-function: var(--ease-3);
+                transition-duration: 0.25s;
+            }
+
+            [data-theme="dark"] .sun-and-moon>.sun-beams {
+                transform: rotate(-25deg);
+                transition-duration: 0.15s;
+            }
+
+            [data-theme="dark"] .sun-and-moon>.moon>circle {
+                transition-delay: 0.25s;
+                transition-duration: 0.5s;
+            }
+        }
+
+        .theme-toggle {
+            --size: 2rem;
+            --icon-fill: hsl(210 10% 30%);
+            --icon-fill-hover: hsl(210 10% 15%);
+            background: none;
+            border: none;
             padding: 0;
-            font-family: inherit;
-            box-sizing: border-box;
+            inline-size: var(--size);
+            block-size: var(--size);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            outline-offset: 5px;
         }
 
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
+        .theme-toggle>svg {
+            inline-size: 100%;
+            block-size: 100%;
+            stroke-linecap: round;
         }
 
-        body {
-            display: flex;
+        [data-theme="dark"] .theme-toggle {
+            --icon-fill: hsl(210 10% 70%);
+            --icon-fill-hover: hsl(210 15% 90%);
         }
 
-        #main {
-
-            width: max-content;
-            margin: auto;
-            padding: 25px 28px;
-            background: #eee;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            animation: popup 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        button.btn {
+            width: auto;
         }
 
-        @keyframes popup {
-            0% {
-                transform: scale(0.2);
-                opacity: 0;
+        [v-cloak] {
+            display: none;
+        }
+
+        article {
+
+            padding: 0;
+            overflow: hidden;
+        }
+
+        article>div {
+            padding: 2rem;
+        }
+
+
+        article.login-page>div:nth-of-type(2) {
+            display: none;
+            background-color: #374956;
+            background-image: url("/assets/samrendra-singh-login.jpg");
+            background-position: center;
+            background-size: cover;
+        }
+
+        article.register-page>div:nth-of-type(2) {
+            display: none;
+            background-color: #374956;
+            background-image: url("/assets/laura-chouette-register.jpg");
+            background-position: center;
+            background-size: cover;
+        }
+
+        @media (min-width: 992px) {
+            article.grid>div:nth-of-type(2) {
+                display: block;
             }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
         }
 
-        h2 {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 20px;
-            font-weight: 400;
-            color: black;
-        }
-
-        .input-parent {
-            display: block;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: black;
-        }
-
-        .input-parent input {
-            padding: 10px 8px;
-            width: 100%;
-            font-size: 16px;
-            background: white;
-            border: none;
-            color: black;
-            border-radius: 4px;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .input-parent input:hover {
-            background: lime;
-        }
-
-        .input-parent input:focus {
-            box-shadow: 0px 0px 0px 1px #0087ff;
-        }
-
-        button {
-            padding: 10px 18px;
-            font-size: 15px;
-            background: lime;
-            width: 100%;
-            border: none;
-            border-radius: 4px;
-            color: black;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        button:focus {
-            box-shadow: 0px 0px 0px 3px black;
-        }
-
-        body {
-            background: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
-        }
-
-        .actions {
-            margin-top: 1em;
-        }
-
-        .error {
-            padding: 1em;
-            border: 3px solid red;
-            background-color: white;
-            margin-bottom: 2em;
-            margin-top: 2em;
+        nav {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 
 <body>
-    <?=$context['content']?>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong><a href="/">xchan</a></strong></li>
 
+        </ul>
+        <ul>
+            <li><button title="Toggles light & dark" aria-label="auto" aria-live="polite" class="theme-toggle"
+                    id="theme-toggle">
+                    <svg viewbox="0 0 24 24" aria-hidden="true" class="sun-and-moon" height="24" width="24">
+                        <mask class="moon" id="moon-mask">
+                            <rect fill="white" height="100%" width="100%" x="0" y="0" />
+                            <circle cx="24" cy="10" fill="black" r="6" />
+                        </mask>
+                        <circle class="sun" cx="12" cy="12" fill="currentColor" mask="url(#moon-mask)" r="6" />
+                        <g class="sun-beams" stroke="currentColor">
+                            <line x1="12" x2="12" y1="1" y2="3" />
+                            <line x1="12" x2="12" y1="21" y2="23" />
+                            <line x1="4.22" x2="5.64" y1="4.22" y2="5.64" />
+                            <line x1="18.36" x2="19.78" y1="18.36" y2="19.78" />
+                            <line x1="1" x2="3" y1="12" y2="12" />
+                            <line x1="21" x2="23" y1="12" y2="12" />
+                            <line x1="4.22" x2="5.64" y1="19.78" y2="18.36" />
+                            <line x1="18.36" x2="19.78" y1="5.64" y2="4.22" />
+                        </g>
+                    </svg>
+                </button></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <?=$context['content']?>
+    </main>
+    <footer class="container">
+        <small> xchan is powered by Framework X</small>
+    </footer>
+    <?= script_tag('/assets/theme-toggle.js', '', 'ts') ?>
 </body>
 
 </html>
